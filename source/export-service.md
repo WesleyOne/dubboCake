@@ -5,7 +5,7 @@ tags: Dubbo 服务导出
 ---
 
 
-# 1. 简介
+## 1. 简介
 
 `服务导出`是服务提供者的行为，主要涉及到`配置校验和URL组装`、`导出服务到本地及远程`、`向注册中心注册服务`三个过程。
 
@@ -13,13 +13,13 @@ tags: Dubbo 服务导出
 
 
 
-# 2. 源码分析
+## 2. 源码分析
 
 下文基于[Spring-XML注册Dubbo配置类](./spring-xml-config)的方式。
 
 
 
-## 入口
+### 入口
 
 1. 服务提供者的导出配置案例
 
@@ -61,9 +61,9 @@ private boolean isDelay() {
 
 
 
-## 2.1 前置工作
+### 2.1 前置工作
 
-### 2.1.1 检查配置
+#### 2.1.1 检查配置
 
 > Dubbo公共契约:采用 URL 作为配置信息的统一格式，所有扩展点都通过传递 URL 携带配置信息。
 
@@ -81,7 +81,7 @@ private boolean isDelay() {
 
 
 
-### 2.1.2 多协议多注册中心导出服务
+#### 2.1.2 多协议多注册中心导出服务
 
 Dubbo 允许我们使用不同的协议导出服务，也允许我们向多个注册中心注册服务。Dubbo 在 doExportUrls 方法中对多协议，多注册中心进行了支持。相关代码如下：
 
@@ -171,7 +171,7 @@ loadRegistries 方法主要包含如下的逻辑：
 
 
 
-### 2.1.3 组装 URL
+#### 2.1.3 组装 URL
 
 配置检查完毕后，紧接着要做的事情是根据配置，以及其他一些信息组装 URL。前面说过，URL 是 Dubbo 配置的载体，通过 URL 可让 Dubbo 的各种配置在各个模块之间传递。
 
@@ -382,7 +382,7 @@ for (遍历 ArgumentConfig 列表) {
 
 
 
-## 2.2 导出 Dubbo 服务
+### 2.2 导出 Dubbo 服务
 
 前置工作做完，接下来就可以进行服务导出了。服务导出分为导出到本地 (JVM)，和导出到远程。在深入分析服务导出的源码前，我们先来从宏观层面上看一下服务导出逻辑。如下：
 
@@ -471,7 +471,7 @@ private void doExportUrlsFor1Protocol(ProtocolConfig protocolConfig, List<URL> r
 
 
 
-### 2.2.1 Invoker 创建过程
+#### 2.2.1 Invoker 创建过程
 
 在 Dubbo 中，`Invoker` 是一个非常重要的模型。在服务提供端，以及服务引用端均会出现 Invoker。Dubbo 官方文档中对 Invoker 进行了说明，这里引用一下。
 
@@ -807,7 +807,7 @@ private static Wrapper makeWrapper(Class<?> c) {
 
 
 
-### 2.2.2 导出服务到本地
+#### 2.2.2 导出服务到本地
 
 本节我们来看一下服务导出相关的代码，按照代码执行顺序，本节先来分析导出服务到本地的过程。相关代码如下：
 
@@ -841,7 +841,7 @@ public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
 
 > `protocol.export`调用时，会经过多个Wapper包装类的调用，最终到`InjvmProtocol`，这个涉及到[SPI加载机制](./2020-06-03-dubbo-spi.md#3-1-获取所有的拓展类)实例化扩展类时的包装扩展类循环包装，所以`protocol`并不是`InjvmProtocol`实例，而是最外层包装类实例。
 
-### 2.2.3 导出服务到远程
+#### 2.2.3 导出服务到远程
 
 与导出服务到本地相比，导出服务到远程的过程要复杂不少，其包含了服务导出与服务注册两个过程。这两个过程涉及到了大量的调用，比较复杂。按照代码执行顺序，本节先来分析服务导出逻辑，服务注册逻辑将在下一节进行分析。下面开始分析，我们把目光移动到 `RegistryProtocol` 的 `export` 方法上。
 
@@ -1175,7 +1175,7 @@ protected void doOpen() throws Throwable {
 
 
 
-### 2.2.4 服务注册
+#### 2.2.4 服务注册
 
 本节我们来分析服务注册过程，服务注册操作对于 Dubbo 来说不是必需的，通过服务直连的方式就可以绕过注册中心。但通常我们不会这么做，直连方式不利于服务治理，仅推荐在测试服务时使用。对于 Dubbo 来说，注册中心虽不是必需，但却是必要的。因此，关于注册中心以及服务注册相关逻辑，我们也需要搞懂。
 
@@ -1229,7 +1229,7 @@ public void register(URL registryUrl, URL registedProviderUrl) {
 
 register 方法包含两步操作，第一步是获取注册中心实例，第二步是向注册中心注册提供者服务节点。接下来分两节内容对这两步操作进行分析。
 
-#### 2.2.4.1 创建注册中心
+##### 2.2.4.1 创建注册中心
 
 本节内容以 `Zookeeper` 注册中心为例进行分析。下面先来看一下 `getRegistry` 方法的源码，这个方法由 `AbstractRegistryFactory` 实现。如下：
 
@@ -1380,7 +1380,7 @@ public class CuratorZookeeperClient extends AbstractZookeeperClient<CuratorWatch
 
 本节分析了 `ZookeeperRegistry` 实例的创建过程，整个过程并不是很复杂。大家在看完分析后，可以自行调试，以加深理解。现在注册中心实例创建好了，接下来要做的事情是向注册中心注册服务，我们继续往下看。
 
-#### 2.2.4.2 节点创建
+##### 2.2.4.2 节点创建
 
 以 `Zookeeper` 为例，所谓的服务注册，本质上是将服务配置数据写入到 `Zookeeper` 的某个路径的节点下。为了让大家有一个直观的了解，下面我们将 `Dubbo` 的 demo 跑起来，然后通过 Zookeeper 可视化客户端 [ZooInspector](https://github.com/apache/zookeeper/tree/b79af153d0f98a4f3f3516910ed47234d7b3d74e/src/contrib/zooinspector) 查看节点数据。如下：
 
@@ -1483,21 +1483,21 @@ public void createEphemeral(String path) {
 
 好了，到此关于服务注册的过程就分析完了。整个过程可简单总结为：先创建注册中心实例，之后再通过注册中心实例注册服务。本节先到这，接下来分析数据订阅过程。
 
-### 2.2.5 订阅 override 数据
+#### 2.2.5 订阅 override 数据
 
 // 待补充
 
 
 
-# 总结
+## 总结
 
 本篇文章详细分析了 Dubbo 服务导出过程，包括配置检测，URL 组装，Invoker 创建过程、导出服务以及注册服务等等。
 
 
 
-# 扩展
+## 扩展
 
-## appendProperties
+### appendProperties
 
 环境、系统配置获取设置
 
@@ -1592,7 +1592,7 @@ protected static void appendProperties(AbstractConfig config) {
 
 
 
-## appendParameters
+### appendParameters
 > 该方法用于将对象字段信息添加到 map 中。实现上则是通过反射获取目标对象的 getter 方法，并调用该方法获取属性值。然后再通过 getter 方法名解析出属性名，比如从方法名 getName 中可解析出属性 name。如果用户传入了属性名前缀，此时需要将属性名加入前缀内容。最后将 <属性名，属性值> 键值对存入到 map 中就行了。
 
 > @Parameter注解主要起到忽略当前参数、必传参数验证、指定key值名称、同名key多值情况下的策略（追加or覆盖）的作用
@@ -1704,7 +1704,7 @@ protected static void appendParameters(Map<String, String> parameters, Object co
 ```
 
 
-## 获取进程号PID
+### 获取进程号PID
 
 ```java
 try {
@@ -1716,7 +1716,7 @@ try {
 }
 ```
 
-## Wrapper.getWrapper
+### Wrapper.getWrapper
 
 使用`arthas`反编译命令`jad com.alibaba.dubbo.common.bytecode.Wrapper1`
 
@@ -1819,7 +1819,7 @@ implements ClassGenerator.DC {
 }
 ```
 
-## 获取host
+### 获取host
 扩展参考[dubbo导出服务的IP获取异常分析](https://blog.csdn.net/qq_22167989/article/details/93107585)
 
 `System.getenv(key)` -> `System.getProperty(key) `-> `protocolConfig.getHost()` -> `provider.getHost()`->`/etc/hosts` -> `default network address` -> `first available network address`

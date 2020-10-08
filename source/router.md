@@ -1,5 +1,5 @@
 ---
-sort: 6
+sort: 7
 title: 服务路由
 tags: Dubbo 服务路由
 ---

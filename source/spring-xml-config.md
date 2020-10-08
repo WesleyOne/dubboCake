@@ -4,7 +4,7 @@ title: Spring-XML配置
 tags: Dubbo Spring XML 配置 源码入口
 ---
 
-样例XML：
+## 样例XML：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
