@@ -1,0 +1,9 @@
+# theme: jekyll-rtd-theme
+remote_theme: rundocs/jekyll-rtd-theme
+
+title: DubboCake
+description: Dubbo学习笔记
+
+# 开启自定义排序
+readme_index:
+  with_frontmatter: true
