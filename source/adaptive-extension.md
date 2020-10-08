@@ -1,5 +1,5 @@
 ---
-sort: 1
+sort: 2
 title: 自适应扩展
 tags: Dubbo 自适应扩展 SPI
 ---
