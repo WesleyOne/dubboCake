@@ -1,3 +1,5 @@
+![公众号]({{ site.baseurl }}/assets/images/qrcode.png){:.border.rounded}
+
 # DubboCake🍰
 
 > 声明：本文档主要来源官方文档，仅用于学习交流。感谢原文大佬们🙏
